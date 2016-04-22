@@ -28,6 +28,7 @@
 #include "ObjectGuid.h"
 #include "AuctionHouseMgr.h"
 #include "Item.h"
+#include "Auth/BigNumber.h"
 
 #include <deque>
 #include <mutex>
@@ -43,6 +44,7 @@ class Item;
 class Object;
 class Player;
 class Unit;
+class Warden;
 class WorldPacket;
 class WorldSocket;
 class QueryResult;
@@ -130,6 +132,7 @@ class MANGOS_DLL_SPEC WorldSession
         bool PlayerLogout() const { return m_playerLogout; }
         bool PlayerLogoutWithSave() const { return m_playerLogout && m_playerSave; }
 
+        void InitWarden(BigNumber* k, std::string const& os);
 
         void SizeError(WorldPacket const& packet, uint32 size) const;
 
@@ -669,6 +672,8 @@ class MANGOS_DLL_SPEC WorldSession
 
         AccountTypes _security;
         uint32 _accountId;
+
+        Warden* _warden;
 
         time_t _logoutTime;
         bool m_inQueue;                                     // session wait in auth.queue

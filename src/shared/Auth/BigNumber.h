@@ -82,6 +82,7 @@ class BigNumber
 
         uint32 AsDword();
         uint8* AsByteArray(int minSize = 0);
+        uint8* AsByteArray(int minSize, bool reverse);
 
         const char* AsHexStr();
         const char* AsDecStr();

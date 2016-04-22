@@ -39,6 +39,9 @@
 #include "SocialMgr.h"
 #include "LootMgr.h"
 
+#include "WardenWin.h"
+#include "WardenMac.h"
+
 #include <mutex>
 #include <deque>
 #include <algorithm>
@@ -86,7 +89,7 @@ bool WorldSessionFilter::Process(WorldPacket* packet)
 /// WorldSession constructor
 WorldSession::WorldSession(uint32 id, WorldSocket* sock, AccountTypes sec, time_t mute_time, LocaleConstant locale) :
     m_muteTime(mute_time),
-    _player(nullptr), m_Socket(sock), _security(sec), _accountId(id), _logoutTime(0),
+    _player(nullptr), m_Socket(sock), _security(sec), _accountId(id), _warden(NULL), _logoutTime(0),
     m_inQueue(false), m_playerLoading(false), m_playerLogout(false), m_playerRecentlyLogout(false), m_playerSave(false),
     m_sessionDbcLocale(sWorld.GetAvailableDbcLocale(locale)), m_sessionDbLocaleIndex(sObjectMgr.GetIndexForLocale(locale)),
     m_latency(0), m_clientTimeDelay(0), m_tutorialState(TUTORIALDATA_UNCHANGED)
@@ -104,6 +107,9 @@ WorldSession::~WorldSession()
     ///- unload player if not unloaded
     if (_player)
         LogoutPlayer(true);
+
+    if (_warden)
+        delete _warden;
 
     /// - If have unclosed socket, close it
     if (m_Socket)
@@ -312,6 +318,9 @@ bool WorldSession::Update(PacketFilter& updater)
         m_Socket = nullptr;
     }
 
+    if (m_Socket && !m_Socket->IsClosed() && _warden)
+        _warden->Update();
+
     // check if we are safe to proceed with logout
     // logout procedure should happen only in World::UpdateSessions() method!!!
     if (updater.ProcessLogout())
@@ -320,6 +329,9 @@ bool WorldSession::Update(PacketFilter& updater)
         time_t currTime = time(nullptr);
         if (!m_Socket || (ShouldLogOut(currTime) && !m_playerLoading))
             LogoutPlayer(true);
+
+        if (m_Socket && GetPlayer() && _warden)
+            _warden->Update();
 
         if (!m_Socket)
             return false;                                   // Will remove this session from the world session map
@@ -730,4 +742,18 @@ void WorldSession::SendPlaySpellVisual(ObjectGuid guid, uint32 spellArtKit)
     data << guid;
     data << spellArtKit;                                    // index from SpellVisualKit.dbc
     SendPacket(&data);
+}
+
+void WorldSession::InitWarden(BigNumber* k, std::string const& os)
+{
+    if (os == "Win" && sWorld.getConfig(CONFIG_BOOL_WARDEN_WIN_ENABLED))
+    {
+        _warden = new WardenWin();
+        _warden->Init(this, k);
+    }
+    else if (os == "OSX" && sWorld.getConfig(CONFIG_BOOL_WARDEN_OSX_ENABLED))
+    {
+        _warden = new WardenMac();
+        _warden->Init(this, k);
+    }
 }

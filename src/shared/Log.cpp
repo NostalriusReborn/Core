@@ -66,7 +66,7 @@ enum LogType
 const int LogType_count = int(LogError) + 1;
 
 Log::Log() :
-    raLogfile(nullptr), logfile(nullptr), gmLogfile(nullptr), charLogfile(nullptr),
+    raLogfile(nullptr), logfile(nullptr), gmLogfile(nullptr), charLogfile(nullptr), wardenLogfile(NULL),
     dberLogfile(nullptr), eventAiErLogfile(nullptr), scriptErrLogFile(nullptr), worldLogfile(nullptr), m_colored(false), m_includeTime(false), m_gmlog_per_account(false), m_scriptLibName(nullptr)
 {
     Initialize();
@@ -266,6 +266,7 @@ void Log::Initialize()
     eventAiErLogfile = openLogFile("EventAIErrorLogFile", nullptr, "a");
     raLogfile = openLogFile("RaLogFile", nullptr, "a");
     worldLogfile = openLogFile("WorldLogFile", "WorldLogTimestamp", "a");
+    wardenLogfile = openLogFile("WardenLogFile", "WardenLogTimestamp", "a");
 
     // Main log file settings
     m_includeTime  = sConfig.GetBoolDefault("LogTime", false);
@@ -1052,4 +1053,67 @@ void script_error_log(const char* str, ...)
     va_end(ap);
 
     sLog.outErrorScriptLib("%s", buf);
+}
+
+void Log::outWarden()
+{
+    if (m_includeTime)
+    {
+        outTime();
+    }
+    printf("\n");
+    if (wardenLogfile)
+    {
+        outTimestamp(wardenLogfile);
+        fprintf(wardenLogfile, "\n");
+        fflush(wardenLogfile);
+    }
+
+    fflush(stdout);
+}
+
+void Log::outWarden(const char* str, ...)
+{
+    if (!str)
+    {
+        return;
+    }
+
+    if (m_colored)
+    {
+        SetColor(true, m_colors[LogNormal]);
+    }
+
+    if (m_includeTime)
+    {
+        outTime();
+    }
+
+    va_list ap;
+
+    va_start(ap, str);
+    vutf8printf(stdout, str, &ap);
+    va_end(ap);
+
+    if (m_colored)
+    {
+        ResetColor(true);
+    }
+
+    printf("\n");
+
+    if (wardenLogfile)
+    {
+        outTimestamp(wardenLogfile);
+        fprintf(wardenLogfile, "[Warden]: ");
+
+        va_start(ap, str);
+        vfprintf(wardenLogfile, str, ap);
+        fprintf(wardenLogfile, "\n");
+        va_end(ap);
+
+        fflush(wardenLogfile);
+    }
+
+    fflush(stdout);
 }

@@ -37,6 +37,8 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/AuctionHouseBot
   ${CMAKE_CURRENT_SOURCE_DIR}/BattleGround
   ${CMAKE_CURRENT_SOURCE_DIR}/OutdoorPvP
+  ${CMAKE_CURRENT_SOURCE_DIR}/Warden
+  ${CMAKE_CURRENT_SOURCE_DIR}/Warden/Modules
   ${CMAKE_SOURCE_DIR}/src/shared
   ${CMAKE_SOURCE_DIR}/src/framework
   ${CMAKE_BINARY_DIR}
@@ -46,6 +48,22 @@ include_directories(
 set(SRC_GRP_AHBOT
     AuctionHouseBot/AuctionHouseBot.cpp
     AuctionHouseBot/AuctionHouseBot.h
+)
+
+set(SRC_GRP_WARDEN
+    Warden/Warden.cpp
+    Warden/Warden.h
+    Warden/WardenCheckMgr.cpp
+    Warden/WardenCheckMgr.h
+    Warden/WardenMac.cpp
+    Warden/WardenMac.h
+    Warden/WardenWin.cpp
+    Warden/WardenWin.h
+)
+
+set(SRC_GRP_WARDEN_MODULES
+    Warden/WardenModuleMac.h
+    Warden/WardenModuleWin.h
 )
 
 set(SRC_GRP_BATTLEGROUND
@@ -441,6 +459,16 @@ source_group("Tool"
 source_group("vmaps"
   FILES
     ${SRC_GRP_VMAPS}
+)
+
+source_group("warden"
+  FILES
+    ${SRC_GRP_WARDEN}
+)
+
+source_group("warden/modules"
+  FILES
+    ${SRC_GRP_WARDEN_MODULES}
 )
 
 source_group("World/Handlers"

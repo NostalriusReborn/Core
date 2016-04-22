@@ -129,6 +129,10 @@ class Log : public MaNGOS::Singleton<Log, MaNGOS::ClassLevelLockable<Log, std::m
             if (worldLogfile != nullptr)
                 fclose(worldLogfile);
             worldLogfile = nullptr;
+
+            if (wardenLogfile != nullptr)
+                fclose(wardenLogfile);
+            wardenLogfile = nullptr;
         }
     public:
         void Initialize();
@@ -146,6 +150,9 @@ class Log : public MaNGOS::Singleton<Log, MaNGOS::ClassLevelLockable<Log, std::m
         void outDetail(const char* str, ...)      ATTR_PRINTF(2, 3);
         // log level >= 3
         void outDebug(const char* str, ...)       ATTR_PRINTF(2, 3);
+
+        void outWarden();
+        void outWarden(const char* str, ...)      ATTR_PRINTF(2, 3);
 
         void outErrorDb();                                  // any log level
         // any log level
@@ -196,6 +203,7 @@ class Log : public MaNGOS::Singleton<Log, MaNGOS::ClassLevelLockable<Log, std::m
         FILE* eventAiErLogfile;
         FILE* scriptErrLogFile;
         FILE* worldLogfile;
+        FILE* wardenLogfile;
         std::mutex m_worldLogMtx;
 
         // log/console control

@@ -701,7 +701,9 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
     std::string account;
     Sha1Hash sha1;
     BigNumber v, s, g, N, K;
+    std::string os;
     WorldPacket packet, SendAddonPacked;
+    bool wardenActive = (sWorld.getConfig(CONFIG_BOOL_WARDEN_WIN_ENABLED) || sWorld.getConfig(CONFIG_BOOL_WARDEN_OSX_ENABLED));
 
     // Read the content of the packet
     recvPacket >> BuiltNumberClient;
@@ -744,6 +746,7 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
                              "s, "                       // 6
                              "mutetime, "                // 7
                              "locale "                   // 8
+                             "os "                       // 9
                              "FROM account "
                              "WHERE username = '%s'",
                              safe_account.c_str());
@@ -808,6 +811,8 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
     else
         locale = LocaleConstant(tempLoc);
 
+    os = fields[9].GetString();
+
     delete result;
 
     // Re-check account ban (same check as in realmd)
@@ -840,6 +845,15 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
         SendPacket(packet);
 
         BASIC_LOG("WorldSocket::HandleAuthSession: User tries to login but his security level is not enough");
+        return -1;
+    }
+
+    // Must be done before WorldSession is created
+    if (wardenActive && os != "Win" && os != "OSX")
+    {
+        WorldPacket Packet(SMSG_AUTH_RESPONSE, 1);
+        Packet << uint8(AUTH_REJECT);
+        SendPacket(packet);
         return -1;
     }
 
@@ -890,6 +904,9 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
 
     // In case needed sometime the second arg is in microseconds 1 000 000 = 1 sec
     ACE_OS::sleep(ACE_Time_Value(0, 10000));
+
+    if (wardenActive)
+        m_Session->InitWarden(&K, os);
 
     sWorld.AddSession(m_Session);
 
