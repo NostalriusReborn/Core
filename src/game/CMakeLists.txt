@@ -403,8 +403,8 @@ set(LIBRARY_SRCS
     ${SRC_GRP_TOOL}
     ${SRC_GRP_VMAPS}
     ${SRC_GRP_WORLD_HANDLERS}
-    $(SRC_GRP_WARDEN)
-    $(SRC_GRP_WARDEN_MODULES)
+    ${SRC_GRP_WARDEN}
+    ${SRC_GRP_WARDEN_MODULES}
     pchdef.cpp
     pchdef.h
 )
