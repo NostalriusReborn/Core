@@ -80,11 +80,3 @@ void AuthCrypt::SetKey(BigNumber *bn)
 AuthCrypt::~AuthCrypt()
 {
 }
-
-void AuthCrypt::GenerateKey(uint8* key, BigNumber* bn)
-{
-    HmacHash hash;
-    hash.UpdateBigNumber(bn);
-    hash.Finalize();
-    memcpy(key, hash.GetDigest(), SHA_DIGEST_LENGTH);
-}

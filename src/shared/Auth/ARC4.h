@@ -27,7 +27,7 @@
 #define _AUTH_SARC4_H
 
 #include <openssl/evp.h>
-#include "Common/Common.h"
+#include <Common.h>
 
 class ARC4
 {

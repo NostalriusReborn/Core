@@ -52,7 +52,7 @@ void HmacHash::Finalize()
     MANGOS_ASSERT(length == SHA_DIGEST_LENGTH);
 }
 
-uint8 *HMACSHA1::ComputeHash(BigNumber *bn)
+uint8* HmacHash::ComputeHash(BigNumber* bn)
 {
     HMAC_Update(&m_ctx, bn->AsByteArray(), bn->GetNumBytes());
     Finalize();
