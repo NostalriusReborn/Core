@@ -63,8 +63,8 @@ set(SRC_GRP_WARDEN
 )
 
 set(SRC_GRP_WARDEN_MODULES
-    Warden/WardenModuleMac.h
-    Warden/WardenModuleWin.h
+    Warden/Modules/WardenModuleMac.h
+    Warden/Modules/WardenModuleWin.h
 )
 
 set(SRC_GRP_BATTLEGROUND
