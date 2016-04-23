@@ -662,6 +662,16 @@ void World::LoadConfigSettings(bool reload)
     setConfig(CONFIG_BOOL_OUTDOORPVP_SI_ENABLED,                       "OutdoorPvp.SIEnabled", true);
     setConfig(CONFIG_BOOL_OUTDOORPVP_EP_ENABLED,                       "OutdoorPvp.EPEnabled", true);
 
+    setConfig(CONFIG_BOOL_WARDEN_WIN_ENABLED, "Warden.WinEnabled", true);
+    setConfig(CONFIG_BOOL_WARDEN_OSX_ENABLED, "Warden.OSXEnabled", false);
+    setConfig(CONFIG_UINT32_WARDEN_NUM_MEM_CHECKS, "Warden.NumMemChecks", 3);
+    setConfig(CONFIG_UINT32_WARDEN_NUM_OTHER_CHECKS, "Warden.NumOtherChecks", 7);
+    setConfig(CONFIG_UINT32_WARDEN_CLIENT_BAN_DURATION, "Warden.BanDuration", 86400);
+    setConfig(CONFIG_UINT32_WARDEN_CLIENT_CHECK_HOLDOFF, "Warden.ClientCheckHoldOff", 30);
+    setConfig(CONFIG_UINT32_WARDEN_CLIENT_FAIL_ACTION, "Warden.ClientCheckFailAction", 0);
+    setConfig(CONFIG_UINT32_WARDEN_CLIENT_RESPONSE_DELAY, "Warden.ClientResponseDelay", 600);
+    setConfig(CONFIG_UINT32_WARDEN_DB_LOGLEVEL, "Warden.DBLogLevel", 0);
+
     setConfig(CONFIG_BOOL_KICK_PLAYER_ON_BAD_PACKET, "Network.KickOnBadPacket", false);
 
     setConfig(CONFIG_BOOL_PLAYER_COMMANDS, "PlayerCommands", true);
