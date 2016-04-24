@@ -23,7 +23,7 @@
  * and lore are copyrighted by Blizzard Entertainment, Inc.
  */
 
-#include "HMACSHA1.h"
+#include "Auth/Hmac.h"
 #include "WardenKeyGeneration.h"
 #include "Common.h"
 #include "WorldPacket.h"
@@ -276,7 +276,7 @@ void WardenWin::RequestData()
             {
                 uint32 seed = rand32();
                 buff << uint32(seed);
-                HMACSHA1 hmac(4, (uint8*)&seed);
+                HmacHash hmac(4, (uint8*)&seed);
                 hmac.UpdateData(wd->Str);
                 hmac.Finalize();
                 buff.append(hmac.GetDigest(), hmac.GetLength());

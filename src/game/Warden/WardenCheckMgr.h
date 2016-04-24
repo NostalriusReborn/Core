@@ -75,13 +75,14 @@ class WardenCheckMgr
         void LoadWardenOverrides();
 
     private:
-        typedef ACE_RW_Thread_Mutex LOCK;
+        typedef std::recursive_mutex LOCK_TYPE;
+        typedef std::lock_guard<LOCK_TYPE> LOCK_TYPE_GUARD;
         typedef std::multimap< uint16, WardenCheck* > CheckMap;
         typedef std::multimap< uint16, WardenCheckResult* > CheckResultMap;
 
-        LOCK           m_lock;
-        CheckMap       CheckStore;
-        CheckResultMap CheckResultStore;
+        LOCK_TYPE_GUARD  m_lock;
+        CheckMap         CheckStore;
+        CheckResultMap   CheckResultStore;
 
 };
 
